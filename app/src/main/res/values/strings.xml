@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">buses</string>
+    <string name="title_home">主页</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_donghaian">东海岸</string>
+</resources>
