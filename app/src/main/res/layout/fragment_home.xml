@@ -20,25 +20,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <AbsoluteLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/nowTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello, World!"
-            android:layout_x="50dp"
-            android:layout_y="100dp"/>
-
-        <TextView
-            android:id="@+id/nearest_bus"
-            android:layout_width="83dp"
-            android:layout_height="wrap_content"
-            android:layout_x="53dp"
-            android:layout_y="141dp"
-            android:text="TextView" />
-    </AbsoluteLayout>
-
+    <include layout="@layout/common" android:id="@+id/cont"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

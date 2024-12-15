@@ -5,4 +5,5 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_donghaian">DongHaiAn</string>
+    <string name="loading_data">loading...&#x000D;if loading failed,please reopen this page.</string>
 </resources>

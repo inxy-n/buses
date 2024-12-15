@@ -1,11 +1,9 @@
-package com.inxy.buses.ui
+package com.inxy.buses
 
 import android.os.Bundle
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import com.inxy.buses.R
 
 class WebViewActivity : AppCompatActivity() {
 
@@ -20,6 +18,6 @@ class WebViewActivity : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
 
         // 加载网页
-        webView.loadUrl("https://inxy.xyz")
+        webView.loadUrl("https://inxy.xyz/buses/littleapp.html")
     }
 }

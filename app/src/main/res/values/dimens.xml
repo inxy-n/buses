@@ -1,3 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="red_dot_size">8dp</dimen>
+    <dimen name="red_dot_margin">4dp</dimen>
+
+    <dimen name="red_dot_margin_top">8dp</dimen>
+    <dimen name="red_dot_margin_end">34dp</dimen>
 </resources>

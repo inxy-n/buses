@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-</selector>
+<shape xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:ignore="ExtraText">
+     <!-- 背景颜色 -->
+    <stroke
+        android:width="8dp"
+    android:color="@color/purple_200" /> <!-- 边框颜色 -->
+    <corners android:radius="8dp" /> <!-- 圆角半径，可选 -->
+</shape>
