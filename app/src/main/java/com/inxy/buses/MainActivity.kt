@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +16,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -115,14 +117,13 @@ class MainActivity : AppCompatActivity() {
                 connection.requestMethod = "POST"
                 connection.connectTimeout=8000
                 connection.readTimeout=8000
-                val requestBody = "userID=$userID2&latitude=$lati&longitude=$longi"
+                val requestBody = "userID=$userID2&latitude=$lati&longitude=$longi&activity=startup"
                 DataOutputStream(connection.outputStream).writeBytes(requestBody)
-                //指定请求方式
-                // connection.requestMethod="Post"
-                //网络输出，附带参数请求
-                //val output=DataOutputStream(connection.outputStream)
-                //output.writeBytes("username=admin&password=121231")
-                //网络响应输入
+
+                val editor = sharedPreferences.edit()
+                editor.putString("LaunchPosition", "latitude=$lati;longitude=$longi")
+                editor.apply()
+
                 val input=connection.inputStream
                 val reader= BufferedReader(InputStreamReader(input))
                 reader.use{
@@ -215,7 +216,23 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        val contentView: View = findViewById(android.R.id.content)
+        contentView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val r = Rect()
+                contentView.getWindowVisibleDisplayFrame(r)
+                val screenHeight = contentView.rootView.height
+                val keypadHeight = screenHeight - r.bottom
 
+                if (keypadHeight > screenHeight * 0.15) { // 如果键盘高度超过屏幕高度的15%，则认为键盘已打开
+                    // 键盘已打开，隐藏底部导航栏
+                    navView.visibility = View.GONE
+                } else {
+                    // 键盘已关闭，显示底部导航栏
+                    navView.visibility = View.VISIBLE
+                }
+            }
+        })
         // 显示手机品牌
         // 检查是否是首次启动
         if (!sharedPreferences.contains("FirstLaunchTime")) {
@@ -391,4 +408,5 @@ class MainActivity : AppCompatActivity() {
         // 开始单次定位
         mLocationClient.startLocation()
     }
+
 }

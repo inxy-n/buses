@@ -12,8 +12,8 @@ android {
         applicationId = "com.inxy.buses"
         minSdk = 31
         targetSdk = 34
-        versionCode = 7
-        versionName = "1.7"
+        versionCode = 8
+        versionName = "1.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.play.services.basement)
     implementation(libs.play.services.location)
     implementation(files("libs/AMap_Location_V6.4.7_20240816.jar"))
+
     testImplementation(libs.junit.junit)
 
     implementation("com.squareup.moshi:moshi:1.12.0")

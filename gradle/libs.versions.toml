@@ -18,6 +18,7 @@ playServicesLocation = "21.3.0"
 roomCompilerProcessingTesting = "2.6.1"
 playServicesBasement = "18.4.0"
 junitJunit = "4.12"
+core = "1.15.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +39,7 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 androidx-room-compiler-processing-testing = { group = "androidx.room", name = "room-compiler-processing-testing", version.ref = "roomCompilerProcessingTesting" }
 play-services-basement = { group = "com.google.android.gms", name = "play-services-basement", version.ref = "playServicesBasement" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junitJunit" }
+androidx-core = { group = "androidx.core", name = "core", version.ref = "core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
