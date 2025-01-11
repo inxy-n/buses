@@ -1,7 +1,9 @@
 package com.inxy.buses.ui.dashboard
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
@@ -22,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.inxy.buses.WebViewActivity
 import com.inxy.buses.databinding.FragmentDashboardBinding
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -36,51 +39,17 @@ import kotlin.concurrent.thread
 
 class DashboardFragment : Fragment() {
 
-     val bus1 = listOf(
-         LocalTime.of(7, 35, 0),
-         LocalTime.of(8, 0, 0),
-         LocalTime.of(8, 20, 0),
-         LocalTime.of(8, 40, 0),
-         LocalTime.of(9, 55, 0),
-         LocalTime.of(10, 20, 0),
-         LocalTime.of(11, 0, 0),
-         LocalTime.of(12, 5, 0),
-         LocalTime.of(12, 30, 0),
-         LocalTime.of(13, 0, 0),
-         LocalTime.of(13, 25, 0),
-         LocalTime.of(13, 45, 0),
-         LocalTime.of(15, 40, 0),
-         LocalTime.of(16, 0, 0),
-         LocalTime.of(16, 45, 0),
-         LocalTime.of(17, 15, 0),
-         LocalTime.of(18, 15, 0),
-         LocalTime.of(18, 45, 0),
-         LocalTime.of(19, 15, 0),
-         LocalTime.of(20, 0, 0),
-         LocalTime.of(20, 40, 0),
-         LocalTime.of(22, 0, 0)
-     )
-    val bus2_Wed= listOf(
-        LocalTime.of(10, 0, 0),
-        LocalTime.of(16, 10, 0),
-        LocalTime.of(18, 20, 0),
-    )
+    var bus1:MutableList<LocalTime> = mutableListOf()
+    var bus2_Mon:MutableList<LocalTime> = mutableListOf()
+    var bus2_Tue:MutableList<LocalTime> = mutableListOf()
+    var bus2_Wed:MutableList<LocalTime> = mutableListOf()
 
-    val bus2_Thu= listOf(
-        LocalTime.of(10, 0, 0),
-        LocalTime.of(16, 0, 0),
-        LocalTime.of(16, 10, 0),
-        LocalTime.of(18, 20, 0),
-        LocalTime.of(18, 35, 0),
-    )
+    var bus2_Thu:MutableList<LocalTime> = mutableListOf()
 
-    val bus2_Fri= listOf(
-        LocalTime.of(10, 0, 0),
-        LocalTime.of(10, 10, 0),
-        LocalTime.of(16, 0, 0),
-        LocalTime.of(18, 20, 0),
-        LocalTime.of(18, 30, 0)
-    )
+    var bus2_Fri:MutableList<LocalTime> = mutableListOf()
+    var bus2_Sat:MutableList<LocalTime> = mutableListOf()
+    var bus2_Sun:MutableList<LocalTime> = mutableListOf()
+
     private var _binding: FragmentDashboardBinding? = null
     fun getCurrentTime(): String {
         val now= LocalDateTime.now().plus(pianyi)
@@ -190,11 +159,96 @@ class DashboardFragment : Fragment() {
 
 var pianyi=Duration.ofHours(0);
 var posi=false;
+
+    fun updateCars()
+    {
+        val busListJson=sharedPreferences.getString("busList", "{\"sn\":{},\"ns\":{}}").toString()
+
+
+        val jsonObject = JSONObject(busListJson)
+
+        if (jsonObject.has("ns")) {
+            bus1= mutableListOf()
+            bus2_Mon = mutableListOf()
+            bus2_Tue = mutableListOf()
+            bus2_Wed = mutableListOf()
+
+            bus2_Thu = mutableListOf()
+
+            bus2_Fri = mutableListOf()
+            bus2_Sat = mutableListOf()
+            bus2_Sun = mutableListOf()
+            val snObject = jsonObject.getJSONObject("ns")
+
+            // 添加 bus1 的数据
+            if (snObject.has("bus1")) {
+                val array = snObject.getJSONArray("bus1")
+                for (i in 0 until array.length()) {
+                    bus1.add(LocalTime.parse(array.getString(i)))
+                }
+            }
+
+            // 添加 bus2_Wed 的数据
+            if (snObject.has("bus2_Mon")) {
+                val array = snObject.getJSONArray("bus2_Mon")
+                for (i in 0 until array.length()) {
+                    bus2_Mon.add(LocalTime.parse(array.getString(i)))
+                }
+            }
+            if (snObject.has("bus2_Tue")) {
+                val array = snObject.getJSONArray("bus2_Tue")
+                for (i in 0 until array.length()) {
+                    bus2_Tue.add(LocalTime.parse(array.getString(i)))
+                }
+            }
+            if (snObject.has("bus2_Wed")) {
+                val array = snObject.getJSONArray("bus2_Wed")
+                for (i in 0 until array.length()) {
+                    bus2_Wed.add(LocalTime.parse(array.getString(i)))
+                }
+            }
+
+            // 添加 bus2_Thu 的数据
+            if (snObject.has("bus2_Thu")) {
+                val array = snObject.getJSONArray("bus2_Thu")
+                for (i in 0 until array.length()) {
+                    bus2_Thu.add(LocalTime.parse(array.getString(i)))
+                }
+            }
+
+            // 添加 bus2_Fri 的数据
+            if (snObject.has("bus2_Fri")) {
+                val array = snObject.getJSONArray("bus2_Fri")
+                for (i in 0 until array.length()) {
+                    bus2_Fri.add(LocalTime.parse(array.getString(i)))
+                }
+            }
+            if (snObject.has("bus2_Sat")) {
+                val array = snObject.getJSONArray("bus2_Sat")
+                for (i in 0 until array.length()) {
+                    bus2_Sat.add(LocalTime.parse(array.getString(i)))
+                }
+            }
+            if (snObject.has("bus2_Sun")) {
+                val array = snObject.getJSONArray("bus2_Sun")
+                for (i in 0 until array.length()) {
+                    bus2_Sun.add(LocalTime.parse(array.getString(i)))
+                }
+            }
+        }
+    }
+    private lateinit var sharedPreferences: SharedPreferences
     private val updateTimeTask = object : Runnable {
         @SuppressLint("SetTextI18n")
         override fun run() {
             // 获取当前时间并格式化
-
+            if(sharedPreferences.getString("busListUpdated","false").toString()=="true")
+            {
+                updateCars();
+                val editor = sharedPreferences.edit()
+                editor.putString("busListUpdated","gotit")
+                editor.apply()
+            }
             val now_time: TextView = binding.cont.nowTime
             var nowtime=LocalTime.now();
             //var nowtime=LocalTime.of(23, 0, 0);
@@ -204,19 +258,36 @@ var posi=false;
             nowtime=nowtime.plus(pianyi)
             now_time.text = getCurrentTime();
             var next=-1;
-            var total_list = bus1;
-            if(localdate.dayOfWeek== DayOfWeek.WEDNESDAY)
-            {
-                total_list+=bus2_Wed;
-                total_list=total_list.sorted();
-            }else if(localdate.dayOfWeek== DayOfWeek.THURSDAY)
-            {
-                total_list+=bus2_Thu;
-                total_list=total_list.sorted();
-            }else if(localdate.dayOfWeek== DayOfWeek.FRIDAY)
-            {
-                total_list+=bus2_Fri;
-                total_list=total_list.sorted();
+            var total_list = bus1.toMutableList();
+            when (localdate.dayOfWeek) {
+                DayOfWeek.MONDAY -> {
+                    total_list += bus2_Mon
+                    total_list.sort()
+                }
+                DayOfWeek.TUESDAY -> {
+                    total_list += bus2_Tue
+                    total_list.sort()
+                }
+                DayOfWeek.WEDNESDAY -> {
+                    total_list += bus2_Wed
+                    total_list.sort()
+                }
+                DayOfWeek.THURSDAY -> {
+                    total_list += bus2_Thu
+                    total_list.sort()
+                }
+                DayOfWeek.FRIDAY -> {
+                    total_list += bus2_Fri
+                    total_list.sort()
+                }
+                DayOfWeek.SATURDAY -> {
+                    total_list += bus2_Sat
+                    total_list.sort()
+                }
+                DayOfWeek.SUNDAY -> {
+                    total_list += bus2_Sun
+                    total_list.sort()
+                }
             }
             next=get_nearest_bus(nowtime,total_list);
 
@@ -341,6 +412,11 @@ var isDestroyed=false;
             // 加载网页
             val intent = Intent(requireContext(), WebViewActivity::class.java)
             startActivity(intent)
+        }
+
+        sharedPreferences = requireActivity().getSharedPreferences("buses", Context.MODE_PRIVATE)
+        if(bus1.size==0){
+            updateCars()
         }
         sendRequestWithHttpUrl()
         // 开始更新时间任务

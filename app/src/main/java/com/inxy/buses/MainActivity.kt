@@ -11,6 +11,8 @@ import android.graphics.Rect
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Base64
 import android.util.Log
 import android.view.Menu
@@ -20,6 +22,7 @@ import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -145,8 +148,10 @@ class MainActivity : AppCompatActivity() {
         thread{
             var connection: HttpURLConnection?=null
             try{
-                val response=StringBuilder()
+                val response1=StringBuilder()
+                val response2=StringBuilder()
                 val url= URL("https://inxy.xyz/buses/v")
+                Log.e("TAG", "checkV:", )
                 connection=url.openConnection() as HttpURLConnection
                 connection.connectTimeout=8000
                 connection.readTimeout=8000
@@ -158,17 +163,27 @@ class MainActivity : AppCompatActivity() {
                 //网络响应输入
                 val input=connection.inputStream
                 val reader= BufferedReader(InputStreamReader(input))
+                var flag=true
                 reader.use{
                     reader.forEachLine {
-                        response.append(it)
+                        if(flag)
+                        {
+                            response1.append(it)
+                            flag=false
+                        }
+                        else
+                        {
+                            response2.append(it)
+                        }
                     }
                 }
                 val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
                 val versionName = packageInfo.versionName.toFloat()
-                var v=response.toString().toFloat()
+                val v=response1.toString().toFloat()
+                val remoteBusv=response2.toString().toFloat()
 
+                Log.e("TAG", "checkV:$v $remoteBusv ", )
                 if(v>versionName) {
-                    Log.e("TAG", "checkV: NeedUpdate", )
                     val editor = sharedPreferences.edit()
                     editor.putString("NeedUpdate", "true")
                     editor.apply()
@@ -185,6 +200,37 @@ class MainActivity : AppCompatActivity() {
                     editor.apply()
                 }
 
+
+                val busV=sharedPreferences.getString("busV", "0").toString().toFloat()
+                if(remoteBusv>busV)
+                {
+                    val response=StringBuilder()
+                    var connection2: HttpURLConnection?=null
+                    val url2= URL("https://inxy.xyz/buses/buslist.txt")
+
+                    connection2=url2.openConnection() as HttpURLConnection
+                    connection2.connectTimeout=8000
+                    connection2.readTimeout=8000
+                    val input2=connection2.inputStream
+                    val reader2= BufferedReader(InputStreamReader(input2))
+                    reader2.use{
+                        reader2.forEachLine {
+                            response.append(it)
+                        }
+                    }
+                    var buslist=response.toString()
+                    Log.e("TAG", "checkV:$buslist", )
+                    val editor = sharedPreferences.edit()
+                    editor.putString("busList",buslist)
+                    editor.putString("busListUpdated","true")
+                    editor.putString("busV",remoteBusv.toString())
+                    editor.apply()
+                    Log.e("TAG", "checkV:车表已经更新 ", )
+                    Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(this, "车表已经更新", Toast.LENGTH_SHORT).show()
+                    }
+                    //binding.root.findViewById<TextView>(R.id.Shuttletitle).setText("Shuttle Bus (updated)")
+                }else Log.e("TAG", "checkV:车表 &%$remoteBusv $busV 新 ", )
 
             }catch (e:Exception){
                 e.printStackTrace()
@@ -257,6 +303,7 @@ class MainActivity : AppCompatActivity() {
             {
 
                 addRedDot(navView, R.id.donghaian)
+                checkV();
             }
         }
 
@@ -273,6 +320,7 @@ class MainActivity : AppCompatActivity() {
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Send feedback to the author", Snackbar.LENGTH_LONG)
                 .setAction("OPEN EMAIL APP", View.OnClickListener {
+
                     // 在这里添加你的监听器逻辑
                     val emailIntent = Intent(Intent.ACTION_SEND).apply {
                         type = "message/rfc822"
@@ -280,7 +328,9 @@ class MainActivity : AppCompatActivity() {
                         putExtra(Intent.EXTRA_SUBJECT, "buses App反馈")
                         putExtra(Intent.EXTRA_TEXT, "")
                     }
-                    try {
+                    try {val editor = sharedPreferences.edit()
+                        editor.putString("busV","0")
+                        editor.apply()
                         startActivity(Intent.createChooser(emailIntent, "Choose an email client"))
                     } catch (ex: android.content.ActivityNotFoundException) {
                         println("No email clients installed.")
@@ -306,16 +356,9 @@ class MainActivity : AppCompatActivity() {
         } else {
 
 
-            Log.e("TAG", "onCreate: null",)
-
-            // TODO
-
-            Log.e("TAG", "onCreate: null",)
             mLocationClient = AMapLocationClient(applicationContext)
             getNowKnownLocation()
 
-
-            Log.e("TAG", "onCreate: null",)
 
             // Example condition, replace with actual logic
 
@@ -375,7 +418,7 @@ class MainActivity : AppCompatActivity() {
     //val navController = findNavController(R.id.nav_host_fragment_activity_main)
     val navInflater = findNavController(R.id.nav_host_fragment_activity_main).navInflater
     val navGraph = navInflater.inflate(R.navigation.mobile_navigation)
-    Toast.makeText(this, "定位成功", Toast.LENGTH_SHORT).show()
+    //Toast.makeText(this, "定位成功", Toast.LENGTH_SHORT).show()
     if (mind== north) {
         navGraph.setStartDestination(R.id.navigation_dashboard)
         findNavController(R.id.nav_host_fragment_activity_main).graph = navGraph

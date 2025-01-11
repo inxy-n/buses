@@ -81,6 +81,7 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textSize="18sp"
+                    android:id="@+id/Shuttletitle"
                     android:text="Shuttle Bus"
                     />
                 <ScrollView
